@@ -32,6 +32,7 @@ class BaseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun setText(viewId: Int, text: String?): BaseViewHolder {
             val tv = getView<TextView>(viewId)!!
             tv.text = text
+            tv.requestLayout()
             return this
         }
 
