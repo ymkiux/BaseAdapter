@@ -23,6 +23,7 @@ import java.util.*
 abstract class BaseAdapter<T> : Adapter<BaseViewHolder> {
     protected var tList: MutableList<T>? = ArrayList()
     protected var recyclerView: RecyclerView? = null
+    private var cusom_animation_tag = false
 
     /**
      * Gets the adapter access sub-control content set
@@ -66,6 +67,14 @@ abstract class BaseAdapter<T> : Adapter<BaseViewHolder> {
     }
 
     override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
+        if (recyclerView != null && !cusom_animation_tag) {
+            val animation =
+                AnimationUtils.loadAnimation(
+                    recyclerView!!.context,
+                    R.anim.load_default
+                )
+            holder.itemView.startAnimation(animation)
+        }
         convert(holder, getItem(position))
     }
 
@@ -108,26 +117,13 @@ abstract class BaseAdapter<T> : Adapter<BaseViewHolder> {
     }
 
     /**
-     * SystemItem default animation
-     */
-    fun loadDefault() {
-        if (recyclerView != null) {
-            val animation =
-                AnimationUtils.loadAnimation(
-                    recyclerView!!.context,
-                    R.anim.load_default
-                )
-            recyclerView!!.startAnimation(animation)
-        }
-    }
-
-    /**
      * Custom item animation
      *
      * @param animator Custom animation classes
      */
     fun setCusItemAnimator(animator: ItemAnimator?) {
         if (recyclerView != null) {
+            cusom_animation_tag = true
             recyclerView!!.itemAnimator = animator
         }
     }
@@ -179,7 +175,6 @@ abstract class BaseAdapter<T> : Adapter<BaseViewHolder> {
             this.tList!!.clear()
             this.tList!!.addAll(tList)
             notifyDataSetChanged()
-            loadDefault()
         }
     }
 
